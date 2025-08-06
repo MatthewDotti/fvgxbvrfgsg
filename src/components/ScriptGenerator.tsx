@@ -7,72 +7,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, Play, Download, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
-interface ScriptData {
-  topic: string;
-  duration: string;
-  style: string;
-  audience: string;
-  additionalInfo: string;
-}
-
-interface APIKeyModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (key: string) => void;
-}
-
-const APIKeyModal = ({ isOpen, onClose, onSave }: APIKeyModalProps) => {
-  const [apiKey, setApiKey] = useState("");
-
-  if (!isOpen) return null;
-
-  const handleSave = () => {
-    if (apiKey.trim()) {
-      localStorage.setItem("gemini_api_key", apiKey);
-      onSave(apiKey);
-      onClose();
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Settings className="w-5 h-5" />
-            Configurar API Key do Gemini
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <Label htmlFor="apiKey">API Key do Google Gemini</Label>
-            <Input
-              id="apiKey"
-              type="password"
-              placeholder="Cole sua API key aqui..."
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-            />
-            <p className="text-sm text-muted-foreground mt-1">
-              Obtenha sua API key em: https://makersuite.google.com/app/apikey
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button onClick={handleSave} className="flex-1">
-              Salvar
-            </Button>
-            <Button variant="outline" onClick={onClose}>
-              Cancelar
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-};
+import { AI_PROVIDERS, AIProvider, ScriptData } from "@/types/ai-providers";
+import { APIKeyModal } from "@/components/ai/APIKeyModal";
+import { ProviderSelector } from "@/components/ai/ProviderSelector";
+import { ScriptGeneratorAPI } from "@/components/ai/ScriptGeneratorAPI";
 
 export const ScriptGenerator = () => {
+  const [selectedProvider, setSelectedProvider] = useState<AIProvider>(AI_PROVIDERS[0]);
   const [scriptData, setScriptData] = useState<ScriptData>({
     topic: "",
     duration: "",
@@ -86,7 +27,7 @@ export const ScriptGenerator = () => {
   const { toast } = useToast();
 
   const generateScript = async () => {
-    const apiKey = localStorage.getItem("gemini_api_key");
+    const apiKey = localStorage.getItem(selectedProvider.keyName);
     
     if (!apiKey) {
       setShowAPIModal(true);
@@ -105,66 +46,18 @@ export const ScriptGenerator = () => {
     setIsLoading(true);
 
     try {
-      const prompt = `
-Crie um roteiro detalhado para um vídeo do YouTube com as seguintes especificações:
-
-**Tópico:** ${scriptData.topic}
-**Duração:** ${scriptData.duration} minutos
-**Estilo:** ${scriptData.style}
-**Público-alvo:** ${scriptData.audience || "Geral"}
-**Informações adicionais:** ${scriptData.additionalInfo || "Nenhuma"}
-
-O roteiro deve incluir:
-1. Hook inicial (primeiros 15 segundos)
-2. Introdução e apresentação do problema/tópico
-3. Desenvolvimento do conteúdo principal (dividido em seções)
-4. Call-to-action para inscrição e likes
-5. Conclusão e próximos passos
-6. Outro (final do vídeo)
-
-Formate o roteiro de forma clara, com indicações de tempo aproximado para cada seção.
-Use uma linguagem envolvente e adequada para YouTube.
-Inclua sugestões de elementos visuais quando relevante.
-`;
-
-      const response = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + apiKey,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [
-                  {
-                    text: prompt,
-                  },
-                ],
-              },
-            ],
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Erro ao gerar roteiro");
-      }
-
-      const data = await response.json();
-      const script = data.candidates[0].content.parts[0].text;
+      const script = await ScriptGeneratorAPI.generateScript(selectedProvider, scriptData, apiKey);
       setGeneratedScript(script);
 
       toast({
         title: "Roteiro gerado!",
-        description: "Seu roteiro foi criado com sucesso.",
+        description: `Roteiro criado com sucesso usando ${selectedProvider.name}.`,
       });
     } catch (error) {
       console.error("Erro:", error);
       toast({
         title: "Erro ao gerar roteiro",
-        description: "Verifique sua API key e tente novamente.",
+        description: `Verifique sua API key do ${selectedProvider.name} e tente novamente.`,
         variant: "destructive",
       });
     } finally {
@@ -179,7 +72,7 @@ Inclua sugestões de elementos visuais quando relevante.
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `roteiro-${scriptData.topic.replace(/\s+/g, "-")}.txt`;
+    a.download = `roteiro-${scriptData.topic.replace(/\s+/g, "-")}-${selectedProvider.id}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -198,8 +91,8 @@ Inclua sugestões de elementos visuais quando relevante.
             </h1>
           </div>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Crie roteiros profissionais para seus vídeos do YouTube usando IA. 
-            Personalize o conteúdo para seu público e estilo.
+            Crie roteiros profissionais para seus vídeos do YouTube usando múltiplas IAs. 
+            Suporte para Gemini, ChatGPT, Claude, Grok e Mistral.
           </p>
         </div>
 
@@ -213,6 +106,11 @@ Inclua sugestões de elementos visuais quando relevante.
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              <ProviderSelector 
+                selectedProvider={selectedProvider}
+                onProviderChange={setSelectedProvider}
+              />
+
               <div>
                 <Label htmlFor="topic">Tópico do Vídeo *</Label>
                 <Input
@@ -237,7 +135,7 @@ Inclua sugestões de elementos visuais quando relevante.
                     <SelectTrigger>
                       <SelectValue placeholder="Duração" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-card border-border">
                       <SelectItem value="1-3">1-3 min</SelectItem>
                       <SelectItem value="3-5">3-5 min</SelectItem>
                       <SelectItem value="5-10">5-10 min</SelectItem>
@@ -265,7 +163,7 @@ Inclua sugestões de elementos visuais quando relevante.
                     <SelectTrigger>
                       <SelectValue placeholder="Estilo" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-card border-border">
                       <SelectItem value="educativo">Educativo</SelectItem>
                       <SelectItem value="entretenimento">Entretenimento</SelectItem>
                       <SelectItem value="tutorial">Tutorial</SelectItem>
@@ -310,12 +208,13 @@ Inclua sugestões de elementos visuais quando relevante.
                 {isLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Gerando Roteiro...
+                    Gerando com {selectedProvider.name}...
                   </>
                 ) : (
                   <>
+                    <span className="mr-2">{selectedProvider.icon}</span>
                     <Play className="w-4 h-4 mr-2" />
-                    Gerar Roteiro
+                    Gerar com {selectedProvider.name}
                   </>
                 )}
               </Button>
@@ -348,6 +247,7 @@ Inclua sugestões de elementos visuais quando relevante.
                 <div className="text-center py-12 text-muted-foreground">
                   <Play className="w-12 h-12 mx-auto mb-4 opacity-50" />
                   <p>Seu roteiro aparecerá aqui após a geração</p>
+                  <p className="text-xs mt-2">Provider selecionado: {selectedProvider.icon} {selectedProvider.name}</p>
                 </div>
               )}
             </CardContent>
@@ -359,6 +259,7 @@ Inclua sugestões de elementos visuais quando relevante.
         isOpen={showAPIModal}
         onClose={() => setShowAPIModal(false)}
         onSave={() => {}}
+        provider={selectedProvider}
       />
     </div>
   );
