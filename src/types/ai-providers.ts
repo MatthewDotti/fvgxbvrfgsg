@@ -55,6 +55,14 @@ export const AI_PROVIDERS: AIProvider[] = [
     endpoint: 'https://api.deepseek.com/v1/chat/completions',
     keyName: 'deepseek_api_key',
     getApiKeyUrl: 'https://platform.deepseek.com/api_keys'
+  },
+  {
+    id: 'perplexity',
+    name: 'Perplexity',
+    icon: '🟠',
+    endpoint: 'https://api.perplexity.ai/chat/completions',
+    keyName: 'perplexity_api_key',
+    getApiKeyUrl: 'https://www.perplexity.ai/settings/api'
   }
 ];
 

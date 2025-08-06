@@ -17,6 +17,8 @@ export class ScriptGeneratorAPI {
         return this.callMistral(apiKey, prompt);
       case 'deepseek':
         return this.callDeepSeek(apiKey, prompt);
+      case 'perplexity':
+        return this.callPerplexity(apiKey, prompt);
       default:
         throw new Error(`Provider ${provider.id} não suportado`);
     }
@@ -164,6 +166,27 @@ Inclua sugestões de elementos visuais quando relevante.
     });
 
     if (!response.ok) throw new Error("Erro ao gerar roteiro com DeepSeek");
+    
+    const data = await response.json();
+    return data.choices[0].message.content;
+  }
+
+  private static async callPerplexity(apiKey: string, prompt: string): Promise<string> {
+    const response = await fetch("https://api.perplexity.ai/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "llama-3.1-sonar-small-128k-online",
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 2000,
+        temperature: 0.7,
+      }),
+    });
+
+    if (!response.ok) throw new Error("Erro ao gerar roteiro com Perplexity");
     
     const data = await response.json();
     return data.choices[0].message.content;
