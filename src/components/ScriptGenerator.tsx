@@ -242,7 +242,10 @@ Inclua sugestões de elementos visuais quando relevante.
                       <SelectItem value="3-5">3-5 min</SelectItem>
                       <SelectItem value="5-10">5-10 min</SelectItem>
                       <SelectItem value="10-15">10-15 min</SelectItem>
-                      <SelectItem value="15+">15+ min</SelectItem>
+                      <SelectItem value="15-20">15-20 min</SelectItem>
+                      <SelectItem value="20-25">20-25 min</SelectItem>
+                      <SelectItem value="25-30">25-30 min</SelectItem>
+                      <SelectItem value="30+">30+ min</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
