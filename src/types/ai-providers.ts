@@ -47,6 +47,14 @@ export const AI_PROVIDERS: AIProvider[] = [
     endpoint: 'https://api.mistral.ai/v1/chat/completions',
     keyName: 'mistral_api_key',
     getApiKeyUrl: 'https://console.mistral.ai/'
+  },
+  {
+    id: 'deepseek',
+    name: 'DeepSeek',
+    icon: '🔴',
+    endpoint: 'https://api.deepseek.com/v1/chat/completions',
+    keyName: 'deepseek_api_key',
+    getApiKeyUrl: 'https://platform.deepseek.com/api_keys'
   }
 ];
 
