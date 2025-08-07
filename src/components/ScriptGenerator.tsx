@@ -164,12 +164,26 @@ export const ScriptGenerator = () => {
                       <SelectValue placeholder="Estilo" />
                     </SelectTrigger>
                     <SelectContent className="bg-card border-border">
-                      <SelectItem value="educativo">Educativo</SelectItem>
-                      <SelectItem value="entretenimento">Entretenimento</SelectItem>
-                      <SelectItem value="tutorial">Tutorial</SelectItem>
-                      <SelectItem value="review">Review</SelectItem>
-                      <SelectItem value="vlog">Vlog</SelectItem>
-                      <SelectItem value="gaming">Gaming</SelectItem>
+                      <SelectItem value="vlog-pessoal">Vlog Pessoal</SelectItem>
+                      <SelectItem value="tutorial">Tutorial / How-To</SelectItem>
+                      <SelectItem value="educacional">Educacional / Explicativo</SelectItem>
+                      <SelectItem value="documentario">Documentário Curto</SelectItem>
+                      <SelectItem value="top-10">Top 10 / Listas</SelectItem>
+                      <SelectItem value="experimentos">Experimentos</SelectItem>
+                      <SelectItem value="opiniao">Opinião / Comentário</SelectItem>
+                      <SelectItem value="reacao">Reação (React)</SelectItem>
+                      <SelectItem value="estudo-caso">Estudo de Caso</SelectItem>
+                      <SelectItem value="desafio">Desafio</SelectItem>
+                      <SelectItem value="analise-tecnica">Análise Técnica / Gráfica</SelectItem>
+                      <SelectItem value="tecnologia">Tecnologia e Gadgets</SelectItem>
+                      <SelectItem value="entrevistas">Entrevistas / Podcast</SelectItem>
+                      <SelectItem value="curiosidades">Curiosidades / Fatos Rápidos</SelectItem>
+                      <SelectItem value="motivacional">Motivacional / Mentalidade</SelectItem>
+                      <SelectItem value="comparativo">Comparativo</SelectItem>
+                      <SelectItem value="misterios">Mistérios e Teorias</SelectItem>
+                      <SelectItem value="turismo">Turismo / Viagens</SelectItem>
+                      <SelectItem value="ferramentas">Ferramentas / Dicas Práticas</SelectItem>
+                      <SelectItem value="humor">Humor / Paródia / Satírico</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
