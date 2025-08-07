@@ -71,6 +71,7 @@ export interface ScriptData {
   duration: string;
   style: string;
   styleKeywords: string;
+  language: string;
   audience: string;
   additionalInfo: string;
 }

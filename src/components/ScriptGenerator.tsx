@@ -19,6 +19,7 @@ export const ScriptGenerator = () => {
     duration: "",
     style: "",
     styleKeywords: "",
+    language: "",
     audience: "",
     additionalInfo: "",
   });
@@ -200,6 +201,34 @@ export const ScriptGenerator = () => {
                     setScriptData({ ...scriptData, styleKeywords: e.target.value })
                   }
                 />
+              </div>
+
+              <div>
+                <Label htmlFor="language">Idioma do Roteiro</Label>
+                <Select
+                  value={scriptData.language}
+                  onValueChange={(value) =>
+                    setScriptData({ ...scriptData, language: value })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o idioma" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card border-border">
+                    <SelectItem value="pt-br">Português (Brasil)</SelectItem>
+                    <SelectItem value="en">Inglês</SelectItem>
+                    <SelectItem value="es">Espanhol</SelectItem>
+                    <SelectItem value="fr">Francês</SelectItem>
+                    <SelectItem value="de">Alemão</SelectItem>
+                    <SelectItem value="it">Italiano</SelectItem>
+                    <SelectItem value="ja">Japonês</SelectItem>
+                    <SelectItem value="ko">Coreano</SelectItem>
+                    <SelectItem value="zh">Chinês (Mandarim)</SelectItem>
+                    <SelectItem value="ru">Russo</SelectItem>
+                    <SelectItem value="ar">Árabe</SelectItem>
+                    <SelectItem value="hi">Hindi</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>

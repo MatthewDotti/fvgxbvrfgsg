@@ -32,6 +32,7 @@ Crie um roteiro detalhado para um vídeo do YouTube com as seguintes especifica�
 **Duração:** ${scriptData.duration} minutos
 **Estilo:** ${scriptData.style}
 **Palavras-chave do estilo:** ${scriptData.styleKeywords || "Nenhuma"}
+**Idioma:** ${scriptData.language || "Português (Brasil)"}
 **Público-alvo:** ${scriptData.audience || "Geral"}
 **Informações adicionais:** ${scriptData.additionalInfo || "Nenhuma"}
 
@@ -47,6 +48,7 @@ Formate o roteiro de forma clara, com indicações de tempo aproximado para cada
 Use uma linguagem envolvente e adequada para YouTube.
 Inclua sugestões de elementos visuais quando relevante.
 Adapte o tom e linguagem conforme as palavras-chave do estilo fornecidas.
+Escreva todo o roteiro no idioma especificado pelo usuário.
 `;
   }
 
