@@ -18,6 +18,7 @@ export const ScriptGenerator = () => {
     topic: "",
     duration: "",
     style: "",
+    styleKeywords: "",
     audience: "",
     additionalInfo: "",
   });
@@ -187,6 +188,18 @@ export const ScriptGenerator = () => {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+
+              <div>
+                <Label htmlFor="styleKeywords">Palavras-chave do Estilo</Label>
+                <Input
+                  id="styleKeywords"
+                  placeholder="Ex: enérgico, dinâmico, casual, profissional"
+                  value={scriptData.styleKeywords}
+                  onChange={(e) =>
+                    setScriptData({ ...scriptData, styleKeywords: e.target.value })
+                  }
+                />
               </div>
 
               <div>

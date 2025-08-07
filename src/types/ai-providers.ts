@@ -70,6 +70,7 @@ export interface ScriptData {
   topic: string;
   duration: string;
   style: string;
+  styleKeywords: string;
   audience: string;
   additionalInfo: string;
 }
