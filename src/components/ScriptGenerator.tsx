@@ -33,6 +33,7 @@ export const ScriptGenerator = () => {
   const [generatedScript, setGeneratedScript] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showAPIModal, setShowAPIModal] = useState(false);
+  const [showYTModal, setShowYTModal] = useState(false);
   const { toast } = useToast();
 
   const generateScript = async () => {
@@ -86,6 +87,87 @@ export const ScriptGenerator = () => {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  };
+
+  // Integração com YouTube Data API
+  const YOUTUBE_PROVIDER: AIProvider = {
+    id: 'youtube',
+    name: 'YouTube Data API',
+    icon: '▶️',
+    endpoint: 'https://www.googleapis.com/youtube/v3',
+    keyName: 'youtube_api_key',
+    getApiKeyUrl: 'https://console.cloud.google.com/apis/credentials'
+  };
+
+  const parseYouTubeId = (url: string): string | null => {
+    try {
+      const u = new URL(url);
+      if (u.hostname === 'youtu.be') return u.pathname.slice(1) || null;
+      if (u.pathname.startsWith('/shorts/')) return u.pathname.split('/')[2] || null;
+      const v = u.searchParams.get('v');
+      return v || null;
+    } catch {
+      return null;
+    }
+  };
+
+  const classifyFrom = (text: string, tags: string[]) => {
+    const lower = text.toLowerCase();
+    const categories = [
+      { niche: 'Finanças', pattern: /(finan|invest|ação|bolsa|etf|trader|cripto|bitcoin|cagr|dividend)/i },
+      { niche: 'Tecnologia', pattern: /(tecno|program|dev|javascript|python|ia|a[ií]|algorit|api|kubernetes|docker|cloud)/i },
+      { niche: 'Saúde e Fitness', pattern: /(saúde|saude|fitness|treino|dieta|nutri|muscula|hiit)/i },
+      { niche: 'Marketing', pattern: /(marketing|venda|tráfego|trafego|anúncio|anuncio|copy|roi|funil)/i },
+      { niche: 'Games', pattern: /(game|jogo|gamer|stream|fortnite|minecraft|valorant)/i },
+    ];
+    let niche = 'Geral';
+    for (const c of categories) {
+      if (c.pattern.test(lower) || tags.some(t => c.pattern.test(t.toLowerCase()))) {
+        niche = c.niche;
+        break;
+      }
+    }
+    const subniche = tags[0] || '';
+    const microniche = tags[1] || '';
+    const nanoniche = tags[2] || '';
+    const advanced = /(avançad|intermediár|framework|api|derivad|cagr|roi|backtest|regress|estatístic|neural|kubernetes|docker|otimiza|quantitativo|hedge|opções|futuros|fine-?tune|prompt engineering|llm)/i;
+    const qualified = advanced.test(text) || tags.length >= 8;
+    return { niche, subniche, microniche, nanoniche, qualified };
+  };
+
+  const fetchYouTubeData = async () => {
+    const key = localStorage.getItem(YOUTUBE_PROVIDER.keyName);
+    if (!key) {
+      setShowYTModal(true);
+      toast({ title: 'API do YouTube necessária', description: 'Cole sua API key do YouTube para buscar dados.' });
+      return;
+    }
+    const link = scriptData.youtubeLink.trim();
+    if (!link) {
+      toast({ title: 'Informe o link do YouTube', description: 'Cole a URL do vídeo para buscar os dados.' });
+      return;
+    }
+    const id = parseYouTubeId(link);
+    if (!id) {
+      toast({ title: 'Link inválido', description: 'Não foi possível identificar o ID do vídeo.', variant: 'destructive' });
+      return;
+    }
+    try {
+      const res = await fetch(`${YOUTUBE_PROVIDER.endpoint}/videos?part=snippet,contentDetails,statistics&id=${id}&key=${key}`);
+      if (!res.ok) throw new Error(String(res.status));
+      const data = await res.json();
+      const item = data.items?.[0];
+      if (!item) throw new Error('Vídeo não encontrado');
+      const title: string = item.snippet?.title || '';
+      const description: string = item.snippet?.description || '';
+      const tags: string[] = item.snippet?.tags || [];
+      const analysis = classifyFrom(`${title}\n${description}`, tags);
+      setScriptData(prev => ({ ...prev, ...analysis }));
+      toast({ title: 'Dados importados', description: 'Sugerimos nicho e qualificação a partir do vídeo.' });
+    } catch (e) {
+      console.error(e);
+      toast({ title: 'Falha ao buscar do YouTube', description: 'Verifique o link e sua API key.', variant: 'destructive' });
+    }
   };
 
   return (
@@ -240,14 +322,26 @@ export const ScriptGenerator = () => {
 
               <div>
                 <Label htmlFor="youtubeLink">Link do YouTube (opcional)</Label>
-                <Input
-                  id="youtubeLink"
-                  placeholder="https://www.youtube.com/watch?v=..."
-                  value={scriptData.youtubeLink}
-                  onChange={(e) =>
-                    setScriptData({ ...scriptData, youtubeLink: e.target.value })
-                  }
-                />
+                <div className="flex items-center gap-2">
+                  <Input
+                    id="youtubeLink"
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    value={scriptData.youtubeLink}
+                    onChange={(e) =>
+                      setScriptData({ ...scriptData, youtubeLink: e.target.value })
+                    }
+                    className="flex-1"
+                  />
+                  <Button type="button" variant="secondary" onClick={() => fetchYouTubeData()}>
+                    Buscar
+                  </Button>
+                  <Button type="button" variant="outline" onClick={() => setShowYTModal(true)}>
+                    API
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {localStorage.getItem('youtube_api_key') ? 'API key do YouTube configurada' : 'Configure a API key do YouTube para buscar dados.'}
+                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -393,6 +487,12 @@ export const ScriptGenerator = () => {
         onClose={() => setShowAPIModal(false)}
         onSave={() => {}}
         provider={selectedProvider}
+      />
+      <APIKeyModal
+        isOpen={showYTModal}
+        onClose={() => setShowYTModal(false)}
+        onSave={() => { fetchYouTubeData(); }}
+        provider={YOUTUBE_PROVIDER}
       />
     </div>
   );
