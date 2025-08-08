@@ -78,4 +78,6 @@ export interface ScriptData {
   nanoniche: string;
   audience: string;
   additionalInfo: string;
+  youtubeLink: string;
+  qualified: boolean;
 }

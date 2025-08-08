@@ -37,6 +37,8 @@ Crie um roteiro detalhado para um vídeo do YouTube com as seguintes especifica�
 **Sobrenicho:** ${scriptData.subniche || "Não informado"}
 **Micronicho:** ${scriptData.microniche || "Não informado"}
 **Nanonicho:** ${scriptData.nanoniche || "Não informado"}
+**Link de referência (YouTube):** ${scriptData.youtubeLink || "Nenhum"}
+**Público qualificado:** ${scriptData.qualified ? "Sim" : "Não"}
 **Público-alvo:** ${scriptData.audience || "Geral"}
 **Informações adicionais:** ${scriptData.additionalInfo || "Nenhuma"}
 
@@ -53,6 +55,8 @@ Use uma linguagem envolvente e adequada para YouTube.
 Inclua sugestões de elementos visuais quando relevante.
 Adapte o tom e a linguagem conforme as palavras-chave do estilo fornecidas.
 Adapte o conteúdo ao nicho e subnichos especificados.
+Se houver link do YouTube, use-o apenas como referência (sem copiar), destacando diferenciais e atualizações.
+Se o público for qualificado, aprofunde a terminologia e a complexidade; caso contrário, simplifique e use exemplos práticos.
 Escreva todo o roteiro no idioma especificado pelo usuário.
 `;
   }

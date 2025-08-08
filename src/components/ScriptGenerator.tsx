@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, Play, Download, Settings } from "lucide-react";
@@ -26,6 +27,8 @@ export const ScriptGenerator = () => {
     nanoniche: "",
     audience: "",
     additionalInfo: "",
+    youtubeLink: "",
+    qualified: false,
   });
   const [generatedScript, setGeneratedScript] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -235,6 +238,18 @@ export const ScriptGenerator = () => {
                 </Select>
               </div>
 
+              <div>
+                <Label htmlFor="youtubeLink">Link do YouTube (opcional)</Label>
+                <Input
+                  id="youtubeLink"
+                  placeholder="https://www.youtube.com/watch?v=..."
+                  value={scriptData.youtubeLink}
+                  onChange={(e) =>
+                    setScriptData({ ...scriptData, youtubeLink: e.target.value })
+                  }
+                />
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="niche">Nicho</Label>
@@ -280,6 +295,17 @@ export const ScriptGenerator = () => {
                     }
                   />
                 </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <Label htmlFor="qualified">Público qualificado</Label>
+                <Switch
+                  id="qualified"
+                  checked={scriptData.qualified}
+                  onCheckedChange={(checked) =>
+                    setScriptData({ ...scriptData, qualified: checked })
+                  }
+                />
               </div>
 
               <div>
