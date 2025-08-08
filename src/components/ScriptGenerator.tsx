@@ -20,6 +20,10 @@ export const ScriptGenerator = () => {
     style: "",
     styleKeywords: "",
     language: "",
+    niche: "",
+    subniche: "",
+    microniche: "",
+    nanoniche: "",
     audience: "",
     additionalInfo: "",
   });
@@ -229,6 +233,53 @@ export const ScriptGenerator = () => {
                     <SelectItem value="hi">Hindi</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="niche">Nicho</Label>
+                  <Input
+                    id="niche"
+                    placeholder="Ex: Finanças pessoais"
+                    value={scriptData.niche}
+                    onChange={(e) =>
+                      setScriptData({ ...scriptData, niche: e.target.value })
+                    }
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="subniche">Sobrenicho</Label>
+                  <Input
+                    id="subniche"
+                    placeholder="Ex: Investimentos para iniciantes"
+                    value={scriptData.subniche}
+                    onChange={(e) =>
+                      setScriptData({ ...scriptData, subniche: e.target.value })
+                    }
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="microniche">Micronicho</Label>
+                  <Input
+                    id="microniche"
+                    placeholder="Ex: ETFs mensais de dividendos"
+                    value={scriptData.microniche}
+                    onChange={(e) =>
+                      setScriptData({ ...scriptData, microniche: e.target.value })
+                    }
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="nanoniche">Nanonicho</Label>
+                  <Input
+                    id="nanoniche"
+                    placeholder="Ex: ETFs de dividendos para estudantes"
+                    value={scriptData.nanoniche}
+                    onChange={(e) =>
+                      setScriptData({ ...scriptData, nanoniche: e.target.value })
+                    }
+                  />
+                </div>
               </div>
 
               <div>

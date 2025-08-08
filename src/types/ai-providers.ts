@@ -72,6 +72,10 @@ export interface ScriptData {
   style: string;
   styleKeywords: string;
   language: string;
+  niche: string;
+  subniche: string;
+  microniche: string;
+  nanoniche: string;
   audience: string;
   additionalInfo: string;
 }
