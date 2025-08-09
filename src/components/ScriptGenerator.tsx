@@ -12,6 +12,7 @@ import { AI_PROVIDERS, AIProvider, ScriptData } from "@/types/ai-providers";
 import { APIKeyModal } from "@/components/ai/APIKeyModal";
 import { ProviderSelector } from "@/components/ai/ProviderSelector";
 import { ScriptGeneratorAPI } from "@/components/ai/ScriptGeneratorAPI";
+import { ImageGenerationSection } from "@/components/images/ImageGenerationSection";
 
 export const ScriptGenerator = () => {
   const [selectedProvider, setSelectedProvider] = useState<AIProvider>(AI_PROVIDERS[0]);
@@ -480,6 +481,9 @@ export const ScriptGenerator = () => {
             </CardContent>
           </Card>
         </div>
+        {generatedScript && (
+          <ImageGenerationSection script={generatedScript} />
+        )}
       </div>
 
       <APIKeyModal
