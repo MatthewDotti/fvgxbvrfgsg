@@ -188,7 +188,7 @@ export const ScriptGenerator = () => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-3 gap-6">
           {/* Formulário */}
           <Card className="shadow-dark">
             <CardHeader>
@@ -446,11 +446,6 @@ export const ScriptGenerator = () => {
                   </>
                 )}
               </Button>
-              {generatedScript && (
-                <div className="pt-4">
-                  <ImageGenerationSection script={generatedScript} />
-                </div>
-              )}
             </CardContent>
           </Card>
 
@@ -485,6 +480,11 @@ export const ScriptGenerator = () => {
               )}
             </CardContent>
           </Card>
+          {generatedScript && (
+            <div>
+              <ImageGenerationSection script={generatedScript} />
+            </div>
+          )}
         </div>
       </div>
 
