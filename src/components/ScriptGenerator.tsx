@@ -446,6 +446,11 @@ export const ScriptGenerator = () => {
                   </>
                 )}
               </Button>
+              {generatedScript && (
+                <div className="pt-4">
+                  <ImageGenerationSection script={generatedScript} />
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -481,9 +486,6 @@ export const ScriptGenerator = () => {
             </CardContent>
           </Card>
         </div>
-        {generatedScript && (
-          <ImageGenerationSection script={generatedScript} />
-        )}
       </div>
 
       <APIKeyModal

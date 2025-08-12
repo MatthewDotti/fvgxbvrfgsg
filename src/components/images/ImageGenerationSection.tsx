@@ -41,6 +41,15 @@ const KLING_PROVIDER: AIProvider = {
   getApiKeyUrl: "https://klingai.com/",
 };
 
+const MIDJOURNEY_PROVIDER: AIProvider = {
+  id: "midjourney",
+  name: "Midjourney",
+  icon: "🖌️",
+  endpoint: "",
+  keyName: "midjourney_api_key",
+  getApiKeyUrl: "https://www.midjourney.com/",
+};
+
 function extractTopics(script: string): string[] {
   if (!script) return [];
   const topics: string[] = [];
@@ -87,10 +96,11 @@ function extractTopics(script: string): string[] {
 
 export function ImageGenerationSection({ script }: ImageGenerationSectionProps) {
   const { toast } = useToast();
-  const [provider, setProvider] = useState<"leonardo" | "kling">("leonardo");
+  const [provider, setProvider] = useState<"leonardo" | "kling" | "midjourney">("leonardo");
   const [items, setItems] = useState<TopicItem[]>([]);
   const [showLeonardoModal, setShowLeonardoModal] = useState(false);
   const [showKlingModal, setShowKlingModal] = useState(false);
+  const [showMidjourneyModal, setShowMidjourneyModal] = useState(false);
 
   const topics = useMemo(() => extractTopics(script), [script]);
 
@@ -108,12 +118,19 @@ export function ImageGenerationSection({ script }: ImageGenerationSectionProps) 
     setItems((prev) => prev.map((it) => (it.id === id ? { ...it, prompt } : it)));
   };
 
-  const ensureKey = (prov: "leonardo" | "kling"): string | null => {
-    const keyName = prov === "leonardo" ? LEONARDO_PROVIDER.keyName : KLING_PROVIDER.keyName;
+  const ensureKey = (prov: "leonardo" | "kling" | "midjourney"): string | null => {
+    const map = {
+      leonardo: LEONARDO_PROVIDER.keyName,
+      kling: KLING_PROVIDER.keyName,
+      midjourney: MIDJOURNEY_PROVIDER.keyName,
+    } as const;
+    const keyName = map[prov];
     const key = localStorage.getItem(keyName);
     if (!key) {
-      prov === "leonardo" ? setShowLeonardoModal(true) : setShowKlingModal(true);
-      toast({ title: "API key necessária", description: `Configure a API do ${prov === "leonardo" ? "Leonardo" : "Kling"}.` });
+      if (prov === "leonardo") setShowLeonardoModal(true);
+      if (prov === "kling") setShowKlingModal(true);
+      if (prov === "midjourney") setShowMidjourneyModal(true);
+      toast({ title: "API key necessária", description: `Configure a API do ${prov === "leonardo" ? "Leonardo" : prov === "kling" ? "Kling" : "Midjourney"}.` });
       return null;
     }
     return key;
@@ -123,8 +140,8 @@ export function ImageGenerationSection({ script }: ImageGenerationSectionProps) 
     const item = items.find((x) => x.id === id);
     if (!item) return;
 
-    if (provider === "kling") {
-      toast({ title: "Kling AI", description: "Integração em breve. Forneça endpoint/documentação para habilitar.", variant: "destructive" });
+    if (provider !== "leonardo") {
+      toast({ title: provider === "kling" ? "Kling AI" : "Midjourney", description: "Integração em breve. Forneça endpoint/documentação para habilitar.", variant: "destructive" });
       return;
     }
 
@@ -143,8 +160,8 @@ export function ImageGenerationSection({ script }: ImageGenerationSectionProps) 
   };
 
   const generateAll = async () => {
-    if (provider === "kling") {
-      toast({ title: "Kling AI", description: "Integração em breve.", variant: "destructive" });
+    if (provider !== "leonardo") {
+      toast({ title: provider === "kling" ? "Kling AI" : "Midjourney", description: "Integração em breve.", variant: "destructive" });
       return;
     }
     const key = ensureKey("leonardo");
@@ -175,10 +192,15 @@ export function ImageGenerationSection({ script }: ImageGenerationSectionProps) 
                 <SelectContent className="bg-card border-border">
                   <SelectItem value="leonardo">Leonardo AI</SelectItem>
                   <SelectItem value="kling">Kling AI (em breve)</SelectItem>
+                  <SelectItem value="midjourney">Midjourney (em breve)</SelectItem>
                 </SelectContent>
               </Select>
 
-              <Button variant="outline" size="sm" onClick={() => (provider === "leonardo" ? setShowLeonardoModal(true) : setShowKlingModal(true))}>
+              <Button variant="outline" size="sm" onClick={() => {
+                if (provider === "leonardo") setShowLeonardoModal(true);
+                else if (provider === "kling") setShowKlingModal(true);
+                else setShowMidjourneyModal(true);
+              }}>
                 <Settings className="w-4 h-4 mr-1" /> API
               </Button>
 
@@ -241,6 +263,12 @@ export function ImageGenerationSection({ script }: ImageGenerationSectionProps) 
         onClose={() => setShowKlingModal(false)}
         onSave={() => {}}
         provider={KLING_PROVIDER}
+      />
+      <APIKeyModal
+        isOpen={showMidjourneyModal}
+        onClose={() => setShowMidjourneyModal(false)}
+        onSave={() => {}}
+        provider={MIDJOURNEY_PROVIDER}
       />
     </section>
   );
