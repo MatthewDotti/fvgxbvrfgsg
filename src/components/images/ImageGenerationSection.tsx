@@ -101,6 +101,9 @@ export function ImageGenerationSection({ script }: ImageGenerationSectionProps) 
   const [showLeonardoModal, setShowLeonardoModal] = useState(false);
   const [showKlingModal, setShowKlingModal] = useState(false);
   const [showMidjourneyModal, setShowMidjourneyModal] = useState(false);
+  const [leonardoKey, setLeonardoKey] = useState<string>(localStorage.getItem(LEONARDO_PROVIDER.keyName) || "");
+  const [klingKey, setKlingKey] = useState<string>(localStorage.getItem(KLING_PROVIDER.keyName) || "");
+  const [midjourneyKey, setMidjourneyKey] = useState<string>(localStorage.getItem(MIDJOURNEY_PROVIDER.keyName) || "");
 
   const topics = useMemo(() => extractTopics(script), [script]);
 
@@ -134,6 +137,19 @@ export function ImageGenerationSection({ script }: ImageGenerationSectionProps) 
       return null;
     }
     return key;
+  };
+
+  const handleSaveKey = (prov: "leonardo" | "kling" | "midjourney") => {
+    if (prov === "leonardo") {
+      localStorage.setItem(LEONARDO_PROVIDER.keyName, leonardoKey.trim());
+      toast({ title: "API salva", description: "Leonardo AI" });
+    } else if (prov === "kling") {
+      localStorage.setItem(KLING_PROVIDER.keyName, klingKey.trim());
+      toast({ title: "API salva", description: "Kling AI" });
+    } else {
+      localStorage.setItem(MIDJOURNEY_PROVIDER.keyName, midjourneyKey.trim());
+      toast({ title: "API salva", description: "Midjourney" });
+    }
   };
 
   const generateOne = async (id: string) => {
@@ -211,6 +227,33 @@ export function ImageGenerationSection({ script }: ImageGenerationSectionProps) 
           </div>
         </CardHeader>
         <CardContent className="space-y-5">
+          <div className="bg-muted/30 border rounded-lg p-4 space-y-3">
+            <h3 className="text-sm font-medium">Chaves de API</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div>
+                <Label htmlFor="api-leonardo">Leonardo AI</Label>
+                <div className="flex gap-2">
+                  <Input id="api-leonardo" type="password" value={leonardoKey} onChange={(e) => setLeonardoKey(e.target.value)} placeholder="Cole a API key" />
+                  <Button variant="outline" size="sm" onClick={() => handleSaveKey("leonardo")}>Salvar</Button>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="api-kling">Kling AI</Label>
+                <div className="flex gap-2">
+                  <Input id="api-kling" type="password" value={klingKey} onChange={(e) => setKlingKey(e.target.value)} placeholder="Cole a API key" />
+                  <Button variant="outline" size="sm" onClick={() => handleSaveKey("kling")}>Salvar</Button>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="api-midjourney">Midjourney</Label>
+                <div className="flex gap-2">
+                  <Input id="api-midjourney" type="password" value={midjourneyKey} onChange={(e) => setMidjourneyKey(e.target.value)} placeholder="Cole a API key" />
+                  <Button variant="outline" size="sm" onClick={() => handleSaveKey("midjourney")}>Salvar</Button>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {items.length === 0 ? (
             <p className="text-sm text-muted-foreground">Nenhum tópico identificado no roteiro.</p>
           ) : (
