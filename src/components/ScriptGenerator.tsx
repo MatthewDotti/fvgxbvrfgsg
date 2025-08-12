@@ -480,11 +480,9 @@ export const ScriptGenerator = () => {
               )}
             </CardContent>
           </Card>
-          {generatedScript && (
-            <div>
-              <ImageGenerationSection script={generatedScript} />
-            </div>
-          )}
+          <div>
+            <ImageGenerationSection script={generatedScript || ""} />
+          </div>
         </div>
       </div>
 

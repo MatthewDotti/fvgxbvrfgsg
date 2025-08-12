@@ -189,7 +189,7 @@ export function ImageGenerationSection({ script }: ImageGenerationSectionProps) 
     }
   };
 
-  if (!script) return null;
+  // Render mesmo sem script para exibir campos de API
 
   return (
     <section className="mt-6">
