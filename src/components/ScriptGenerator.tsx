@@ -14,6 +14,7 @@ import { ProviderSelector } from "@/components/ai/ProviderSelector";
 import { ScriptGeneratorAPI } from "@/components/ai/ScriptGeneratorAPI";
 import { ImageGenerationSection } from "@/components/images/ImageGenerationSection";
 import { AudioGenerationSection } from "@/components/audio/AudioGenerationSection";
+import { CombinedSection } from "@/components/combined/CombinedSection";
 
 export const ScriptGenerator = () => {
   const [selectedProvider, setSelectedProvider] = useState<AIProvider>(AI_PROVIDERS[0]);
@@ -189,7 +190,7 @@ export const ScriptGenerator = () => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-4 gap-6">
+        <div className="grid lg:grid-cols-5 gap-6">
           {/* Formulário */}
           <Card className="shadow-dark">
             <CardHeader>
@@ -486,6 +487,9 @@ export const ScriptGenerator = () => {
           </div>
           <div>
             <AudioGenerationSection script={generatedScript || ""} />
+          </div>
+          <div>
+            <CombinedSection script={generatedScript || ""} />
           </div>
         </div>
       </div>
