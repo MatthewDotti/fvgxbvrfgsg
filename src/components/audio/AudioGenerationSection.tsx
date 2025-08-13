@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,6 +51,23 @@ export function AudioGenerationSection({ script }: AudioGenerationSectionProps) 
   const [text, setText] = useState<string>(script || "");
   const [audioUrl, setAudioUrl] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [importedName, setImportedName] = useState<string>("");
+
+  const onImportClick = () => fileInputRef.current?.click();
+  const onFileChange = (e: any) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    setAudioUrl((prev) => {
+      if (prev) {
+        try { URL.revokeObjectURL(prev); } catch {}
+      }
+      return url;
+    });
+    setImportedName(file.name);
+    toast({ title: "Áudio importado", description: file.name });
+  };
 
   useEffect(() => {
     setText(script || "");
@@ -181,6 +198,8 @@ export function AudioGenerationSection({ script }: AudioGenerationSectionProps) 
           </div>
 
           <div className="flex items-center gap-2">
+            <input ref={fileInputRef} type="file" accept="audio/*" className="hidden" onChange={onFileChange} />
+            <Button variant="outline" onClick={onImportClick}>Importar Áudio</Button>
             <Button onClick={generateAudio} disabled={isLoading || !canGenerate}>
               {isLoading ? (
                 <>
@@ -194,9 +213,12 @@ export function AudioGenerationSection({ script }: AudioGenerationSectionProps) 
             {audioUrl && (
               <a href={audioUrl} download>
                 <Button variant="outline">
-                  <Download className="w-4 h-4 mr-2" /> Baixar MP3
+                  <Download className="w-4 h-4 mr-2" /> Baixar Áudio
                 </Button>
               </a>
+            )}
+            {importedName && (
+              <span className="text-xs text-muted-foreground truncate max-w-[160px]">Arquivo: {importedName}</span>
             )}
           </div>
 
