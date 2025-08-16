@@ -190,9 +190,9 @@ export const ScriptGenerator = () => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-5 gap-6">
+        <div className="space-y-6">
           {/* Formulário */}
-          <Card className="shadow-dark">
+          <Card className="shadow-dark max-w-4xl mx-auto">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Settings className="w-5 h-5" />
@@ -409,7 +409,7 @@ export const ScriptGenerator = () => {
                 <Label htmlFor="audience">Público-alvo</Label>
                 <Input
                   id="audience"
-                  placeholder="Ex: Criadores de conteúdo iniciantes"
+                  placeholder="Ex: Jovens de 18-25 anos interessados em carreira"
                   value={scriptData.audience}
                   onChange={(e) =>
                     setScriptData({ ...scriptData, audience: e.target.value })
@@ -421,7 +421,8 @@ export const ScriptGenerator = () => {
                 <Label htmlFor="additionalInfo">Informações Adicionais</Label>
                 <Textarea
                   id="additionalInfo"
-                  placeholder="Pontos específicos que quer abordar, tom de voz, etc."
+                  placeholder="Qualquer informação adicional que possa ajudar a IA a criar um roteiro melhor..."
+                  rows={3}
                   value={scriptData.additionalInfo}
                   onChange={(e) =>
                     setScriptData({ ...scriptData, additionalInfo: e.target.value })
@@ -432,19 +433,17 @@ export const ScriptGenerator = () => {
               <Button
                 onClick={generateScript}
                 disabled={isLoading}
-                className="w-full bg-gradient-youtube hover:bg-youtube-hover transition-all duration-300 animate-glow"
-                size="lg"
+                className="w-full bg-primary hover:bg-primary/90"
               >
                 {isLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Gerando com {selectedProvider.name}...
+                    Gerando...
                   </>
                 ) : (
                   <>
-                    <span className="mr-2">{selectedProvider.icon}</span>
                     <Play className="w-4 h-4 mr-2" />
-                    Gerar com {selectedProvider.name}
+                    Gerar Roteiro
                   </>
                 )}
               </Button>
@@ -452,7 +451,7 @@ export const ScriptGenerator = () => {
           </Card>
 
           {/* Resultado */}
-          <Card className="shadow-dark">
+          <Card className="shadow-dark max-w-4xl mx-auto">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Roteiro Gerado</CardTitle>
@@ -482,13 +481,19 @@ export const ScriptGenerator = () => {
               )}
             </CardContent>
           </Card>
-          <div>
+
+          {/* Imagem */}
+          <div className="max-w-4xl mx-auto">
             <ImageGenerationSection script={generatedScript || ""} />
           </div>
-          <div>
+
+          {/* Áudio */}
+          <div className="max-w-4xl mx-auto">
             <AudioGenerationSection script={generatedScript || ""} />
           </div>
-          <div>
+
+          {/* Combinar */}
+          <div className="max-w-4xl mx-auto">
             <CombinedSection script={generatedScript || ""} />
           </div>
         </div>
