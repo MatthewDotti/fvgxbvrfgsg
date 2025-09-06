@@ -17,6 +17,7 @@ import { AudioGenerationSection } from "@/components/audio/AudioGenerationSectio
 import { CombinedSection } from "@/components/combined/CombinedSection";
 
 export const ScriptGenerator = () => {
+  console.log("ScriptGenerator component is rendering");
   const [selectedProvider, setSelectedProvider] = useState<AIProvider>(AI_PROVIDERS[0]);
   const [scriptData, setScriptData] = useState<ScriptData>({
     topic: "",
@@ -173,6 +174,7 @@ export const ScriptGenerator = () => {
     }
   };
 
+  console.log("ScriptGenerator about to render JSX");
   return (
     <div className="min-h-screen bg-gradient-dark p-6">
       <div className="max-w-6xl mx-auto space-y-6">
